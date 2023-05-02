@@ -1,0 +1,166 @@
+#include <iostream>
+
+using namespace std;
+
+// Fonksiyon prototipleri
+void oyunTahtasi(char oyun[50][50]);
+void hamleYap(char oyun[50][50], int &oyuncu);
+bool hamleGecerliMi(char oyun[50][50], int satir, int sutun);
+bool kazananVarMi(char oyun[50][50], char isaret);
+bool berabereMi(char oyun[50][50]);
+
+int main()
+{
+    // Matris tanımlama
+    char oyun[50][50];
+    for (int i = 0; i < 50; i++)
+    {
+        for (int j = 0; j < 50; j++)
+        {
+            oyun[i][j] = ' ';
+        }
+    }
+
+    int oyuncu = 1;
+    bool oyunBitti = false;
+
+    while (!oyunBitti)
+    {
+        oyunTahtasi(oyun);
+        hamleYap(oyun, oyuncu);
+        oyunBitti = kazananVarMi(oyun, 'X') || kazananVarMi(oyun, 'O') || berabereMi(oyun);
+    }
+
+    oyunTahtasi(oyun);
+
+    if (kazananVarMi(oyun, 'X'))
+    {
+        cout << "X kazandi!" << endl;
+    }
+    else if (kazananVarMi(oyun, 'O'))
+    {
+        cout << "O kazandi!" << endl;
+    }
+    else
+    {
+        cout << "Berabere!" << endl;
+    }
+
+    return 0;
+}
+
+// Oyun tahtasını ekrana yazdıran fonksiyon
+void oyunTahtasi(char oyun[50][50])
+{
+    cout << "------------------" << endl;
+    for (int i = 0; i < 50; i++)
+    {
+        for (int j = 0; j < 50; j++)
+        {
+            cout << "| " << oyun[i][j] << " ";
+        }
+        cout << "|" << endl;
+        cout << "------------------" << endl;
+    }
+}
+
+// Hamle yapmayı sağlayan fonksiyon
+void hamleYap(char oyun[50][50], int &oyuncu)
+{
+    int satir, sutun;
+
+    if (oyuncu == 1)
+    {
+        cout << "X oyuncusunun hamlesi:" << endl;
+    }
+    else
+    {
+        cout << "O oyuncusunun hamlesi:" << endl;
+    }
+
+    cout << "Satir ve sutun numaralarini girin (1-50): ";
+    cin >> satir >> sutun;
+
+ while (!hamleGecerliMi(oyun, satir - 1, sutun - 1))
+    {
+        cout << "Gecersiz hamle, lutfen tekrar girin." << endl;
+        cout << "Satir ve sutun numaralarini girin (1-50): ";
+        cin >> satir >> sutun;
+    }
+
+    if (oyuncu == 1)
+    {
+        oyun[satir - 1][sutun - 1] = 'X';
+        oyuncu = 2;
+    }
+    else
+    {
+        oyun[satir - 1][sutun - 1] = 'O';
+        oyuncu = 1;
+    }
+}
+
+// Girilen hamlenin geçerli olup olmadığını kontrol eden fonksiyon
+bool hamleGecerliMi(char oyun[50][50], int satir, int sutun)
+{
+    if (satir < 0 || satir > 49 || sutun < 0 || sutun > 49)
+    {
+        return false;
+    }
+    if (oyun[satir][sutun] == ' ')
+    {
+        return true;
+    }
+    return false;
+}
+
+// Kazananın olup olmadığını kontrol eden fonksiyon
+bool kazananVarMi(char oyun[50][50], char isaret)
+{
+    // Satır kontrolü
+    for (int i = 0; i < 50; i++)
+    {
+        if (oyun[i][0] == isaret && oyun[i][1] == isaret && oyun[i][2] == isaret)
+        {
+            return true;
+        }
+    }
+
+    // Sütun kontrolü
+    for (int i = 0; i < 50; i++)
+    {
+        if (oyun[0][i] == isaret && oyun[1][i] == isaret && oyun[2][i] == isaret)
+        {
+            return true;
+        }
+    }
+
+    // Çapraz kontrol
+    if (oyun[0][0] == isaret && oyun[1][1] == isaret && oyun[2][2] == isaret)
+    {
+        return true;
+    }
+    if (oyun[0][2] == isaret && oyun[1][1] == isaret && oyun[2][0] == isaret)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+// Berabere kalındığını kontrol eden fonksiyon
+bool berabereMi(char oyun[50][50])
+{
+    for (int i = 0; i < 50; i++)
+    {
+        for (int j = 0; j < 50; j++)
+        {
+            if (oyun[i][j] == ' ')
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
